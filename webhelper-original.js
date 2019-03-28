@@ -109,18 +109,9 @@ function boardReset(message){
 }
 */
 
-function newFormatTurnRecords(turnRecords){
-	turn=8;
-	turnRecords=[
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"]
-];
+function newFormatTurnRecords(turnRecords,turn){
+	var thisGuess = "";
+	var thisFeedback = "";
 	for (var row=0;row<turn;row++) {
 	    var turnList = document.getElementById("turns");
 	    var node = document.createElement("li");
@@ -128,15 +119,10 @@ function newFormatTurnRecords(turnRecords){
 	    var newTurn = document.getElementById("turns").lastChild;
 	    var ulNode = document.createElement("ul");
 	    newTurn.appendChild(ulNode).setAttribute("class", "turn");
-	    for (var peg=0;peg<8;peg++){
-			var newList = document.getElementsByClassName("turn");
-			var liNode = document.createElement("li");
-			if (turnRecords[row][peg]){
-				newList[row].appendChild(liNode).setAttribute("class", turnRecords[row][peg]);
-			}
-			else{
-				newList[row].appendChild(liNode);
-			}
-		}
+	    for (var peg=0;peg<turnRecords[row].length;peg++){
+	      var newList = document.getElementsByClassName("turn");
+	      var liNode = document.createElement("li");
+	      newList[row].appendChild(liNode).setAttribute("class", turnRecords[row][peg]);
+	  }
 	}
 }

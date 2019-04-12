@@ -104,6 +104,9 @@ li.w {
 .y { background-color:yellow; }
 
 #turns {
+	background-image:url("Blank Board.jpg");
+	background-repeat: no-repeat;
+	height: 593px;
 	width:100%;
 	margin:20px auto;
 	padding-left:20px;

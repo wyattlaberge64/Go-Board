@@ -1,98 +1,90 @@
 window.onload = setup;
-var turnRecords=[];
-var turn=0;
-var message="";
-var colorsPicked=[];
-var colors=[], code=[], guess=[], feedback=[];
-colors = ["r","b","g","w","c","y"];
-var thisTurn = [], turnRecords = [];
-var board = document.getElementById("board");
+
+/* Globals */
+const classes=["e","b","w"];
+var turns=[];
+var buttonElement = document.getElementById("next");
 var title = document.getElementById("title");
-var buttonElement = document.getElementById("submit-guess");
-var myPicks = document.getElementById("colors");
+var board = document.getElementById("board");
+var rows = document.getElementById("rows");
+// Wyatt - change this (so we start at 0)
+var turn=-1;
+var allCaptures=[0,0];
 
 function setup() {
-	title.innerHTML = "Mastermind!";
-	boardReset("<p class=\"clicker\">Click for instructions.</p><p>Press play button below to begin.</p>");
-	board.setAttribute("onclick","instructions()");
-	myPicks.classList.add("hide");
-  buttonElement.setAttribute("onclick","startGame()");
+	title.innerHTML = "Go!";
+	boardReset("Here are instructions.");
+	buttonElement.innerHTML = "Next";
+  turns=firstGame(turns);
+  buildBoard();
 }
 
-function instructions() {
-	var howTo="Pick four colors by clicking on the four circles you'll see later, then press the Play button to get feedback.  Picking magenta on the first circle quits the game. You can choose more than one of each color, but picking all the same color is wasteful.\n\nThe game will respond with black circles for each right color in the right place, and white circles for right colors in the wrong place. The position of the black or white circles does not mean anything."
-	alert(howTo);
+/* Main */
+function main() {
+  nextTurn();
 }
 
-function startGame() {
-	for (i=0;i<4;i++) {
-		g=document.getElementById(i);
-		g.className = "";
-	}
-	turnRecords=[];
-	code=setCode(colors);
-	myPicks.className = "";
-  	board.className = "";
-	boardReset("Code Is Set up!<br /><br />\nPick four choices.\n <span class=\"m\">Magenta</span> quits.");
-	for (i=0;i<4;i++) {
-		g=document.getElementById(i);
-		guess[i]=g.options[g.selectedIndex].value;
-	}
-	buttonElement.setAttribute("onclick","newGetGuess(code)");
+// Populate Turns Array
+function randomBoard() {
+  turns=[];
+  for (let row=0;row<9;row++){
+    for (let col=0;col<9;col++){
+      turnVal=Math.floor(Math.random()*3);
+      turnClass=classes[turnVal];
+      let newTurn=[row,col,turnClass];
+      turns.push(newTurn);
+      }
+    }
+}	
+
+function firstGame(turns){
+	turns = [[4,3,"b",[]],[4,5,"w",[]],[4,4,"b",[]],[3,5,"w",[]],[5,5,"b",[]],[5,6,"w",[]],[6,6,"b",[]],[6,5,"w",[]],[5,4,"b",[]],[7,6,"w",[]],[6,7,"b",[]],[7,7,"w",[]],[6,4,"b",[]],[7,5,"w",[]],[4,6,"b",[]],[5,7,"w",[]],[4,7,"b",[]],[6,8,"w",[6,6],[6,7]],[2,5,"b",[]],[3,6,"w",[]],[2,6,"b",[]],[3,7,"w",[]],[3,4,"b",[]],[4,1,"w",[]],[2,7,"b",[]],[4,8,"w",[4,6],[4,7]],[2,1,"b",[]],[6,2,"w",[]],[5,2,"b",[]],[5,1,"w",[]],[7,2,"b",[]],[2,2,"w",[]],[1,2,"b",[]],[6,3,"w",[]],[7,3,"b",[]],[7,1,"w",[]],[7,4,"b",[]],[2,3,"w",[]],[3,1,"b",[]],[2,4,"w",[]],[3,2,"b",[]],[1,5,"w",[]],[1,6,"b",[]],[1,1,"w",[]],[1,4,"b",[]],[1,3,"w",[]],[0,5,"b",[1,5]],[0,2,"w",[1,2]],[0,4,"b",[]],[0,3,"w",[]],[5,3,"b",[]],[6,1,"w",[]],[8,1,"b",[]],[1,0,"w",[]],[7,0,"b",[]],[8,2,"w",[]],[8,3,"b",[8,2]],[6,0,"w",[]],[4,0,"b",[]],[2,0,"w",[]],[3,0,"b",[]],[0,7,"w",[]],[1,7,"b",[]],[8,5,"w",[]],[4,2,"b",[]],[8,0,"w",[7,0]],[8,2,"b",[]],[8,4,"w",[]],[7,0,"b",[8,0]],[2,8,"w",[]],[1,8,"b",[]],[8,0,"w",[7,0]],[0,1,"b",[]],[0,0,"w",[0,1]],[7,0,"b",[8,0]],[0,6,"w",[]],[0,8,"b",[0,6],[0,7]],[8,0,"w",[7,0]],[0,6,"b",[]],[3,8,"w",]];
+	return turns;
 }
 
-function newGetGuess(code) {
-	var guess =[];
-	var g = 0;
-	turn++;
-	if (turn > 6){
-		document.getElementById("board").style.height = 320+(20*turn);
+function buildBoard(){
+  while (rows.hasChildNodes()) {   
+    rows.removeChild(rows.firstChild);
+  }
+	for (let row=0;row<9;row++){
+    var newRow = document.createElement("li");
+    var rowNode = document.createElement("ul"); 
+    rowNode.className = "row";
+    for (let col=0;col<9;col++){
+      var turnNode = document.createElement("li");
+      turnNode.className="e";
+	    rowNode.appendChild(turnNode);
+	  }
+    newRow.appendChild(rowNode);
+    rows.appendChild(newRow);
 	}
-	for (i=0;i<4;i++) {
-		g=document.getElementById(i);
-		guess[i]=g.options[g.selectedIndex].value;
-	}
-  masterMain(code,guess,turn);
 }
 
-function fourPicked(sid) {
-	var included=false;
-	var colorPick = document.getElementById(sid);
-	colorPick.className = '';
-	colorPick.classList.add(colorPick.value);
-	for (var val=0; val<colorsPicked.length;val++){
-		if (colorsPicked[val]==sid){
-			included=true;
-		}
-	}
-	if (included==false) {
-		colorsPicked.push(sid)
-	}	
-	if (colorsPicked.length==4)
-		buttonElement.classList.add("fourok");
-}
-
-function masterMain(code,guess,turn){
-  board.removeChild(board.lastChild);
-	var node = document.createElement('ul');
-	board.appendChild(node).setAttribute("id","turns");
-	feedback = testGuess(code,guess);
-	thisTurn = addTurn(guess,feedback);
-	turnRecords.push(thisTurn);
-	if(feedback[3]=="b"){
-	  boardReset("<p>You won in "+turn+" turns!</p><p>Click button to play again.</p> ");
-    board.classList.add("won");
-		buttonElement.setAttribute("onclick","newGame(turn)");
-	}
-	else if(guess[0]=="m"){
-	  boardReset("Quitter! Play again? Press play.");
-    board.classList.add("quitted");
-		buttonElement.setAttribute("onclick","startGame()");
-	}
-	else{
-	  newFormatTurnRecords(turnRecords,turn);
-	  console.log(turnRecords);
-	}
+function nextTurn(){
+  turn++;
+  if (turn <= turns.length) {
+    let row = turns[turn][0];
+    let column = turns[turn][1];
+    let color= turns[turn][2];
+    let captures= turns[turn][3];
+    // each LI is a stone.  What should the count be? 
+    let stoneCount=(row)*9+column+1;
+    // alter LI count by ignoring the extra row LIs
+    let stoneCountAdjustment=(Math.floor((stoneCount-1)/9));
+    stoneCount=stoneCount+stoneCountAdjustment;
+    // console.log("Row: "+row+" Column: "+column+" Stone count = "+stoneCount+" Adjusted count = "+(stoneCount+stoneCountAdjustment)+" Color: "+color);
+    var myCol = rows.getElementsByTagName("li")[stoneCount];
+    myCol.className=turns[turn][2];
+    if (captures&&captures[0]){
+      for(let stones = 3; stones < turns[turn].length; stones++){
+        captures.push(turns[turn][stones]);
+      }
+      removeCaptures(captures,color);
+    } 
+  }
+  else {
+    alert("End of game.");
+  }
 }
 
 function boardReset(message){
@@ -102,41 +94,19 @@ function boardReset(message){
   board.appendChild(messageArea);
 }
 
-/* function newGame(){
-	buttonElement.onclick = function () {
-		document.location.reload();
-	}
-}
-*/
 
-function newFormatTurnRecords(turnRecords){
-	turn=8;
-	turnRecords=[
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"],
-	["","b","b","w","","","b","w"]
-];
-	for (var row=0;row<turn;row++) {
-	    var turnList = document.getElementById("turns");
-	    var node = document.createElement("li");
-	    turnList.appendChild(node);
-	    var newTurn = document.getElementById("turns").lastChild;
-	    var ulNode = document.createElement("ul");
-	    newTurn.appendChild(ulNode).setAttribute("class", "turn");
-	    for (var peg=0;peg<8;peg++){
-			var newList = document.getElementsByClassName("turn");
-			var liNode = document.createElement("li");
-			if (turnRecords[row][peg]){
-				newList[row].appendChild(liNode).setAttribute("class", turnRecords[row][peg]);
-			}
-			else{
-				newList[row].appendChild(liNode);
-			}
-		}
-	}
+function removeCaptures(captures,color){
+	let aC = 0;
+	if (color = "w") aC = 1;
+	allCaptures[aC]+=turns[turn].length-3;
+	alert(allCaptures);
+	for(let stones = 3; stones < turns[turn].length; stones++){
+        let row=turns[turn][stones][0];
+        let column=turns[turn][stones][1];
+        let stoneCount=(row)*9+column+1;
+        let stoneCountAdjustment=(Math.floor((stoneCount-1)/9));
+        stoneCount=stoneCount+stoneCountAdjustment;
+        var myCol = rows.getElementsByTagName("li")[stoneCount];
+        myCol.className="e";
+    }
 }

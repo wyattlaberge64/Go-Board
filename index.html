@@ -2,87 +2,57 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <script language="javascript" type="text/javascript" src="mastermind.js"></script>
+  
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
 	<div id = "console">
+	<div id = "sidebar">
+			
+		<div id = "scoreboard">
+			<h2>ScoreBoard</h2>
+			<div class="content"></div>
+		</div>
+		<div id = "messages">
+			<h2>Messages</h2>
+			<div class="content"></div>
+		</div>
+		<div id = "deadstones">
+			<h2>DeadStones</h2>
+			<div class="content">
+				<li class ="b"></li>
+			</div>
+		</div>
+	</div>
     <div id = "board">
       <h1 id="title">Web Helper Not Loaded</h1>
-	  <ul id="turns"><li><ul class="turn"><li class="b"></li>
-			<li class="w"></li>
-			<li class="b"></li>
-			<li class="w"></li>
-			<li class="b"></li>
-			</ul></li>
-			<li><ul class="turn"><li class="b"></li>
-			<li class="w"></li>
-			<li class="b"></li>
-			<li class="w"></li>
-			<li class="b"></li>
-			</ul></li>
-			<li><ul class="turn"><li class="b"></li>
-			<li class="w"></li>
-			<li class="b"></li>
-			<li class="w"></li>
-			<li class="b"></li>
-			</ul></li>
-		</ul>
-		</div>
-	  <div id = "makeGuess">
-  	  <ol id="colors">
-	    	<li><select onchange="fourPicked(0)" id = "0">
-	            <option value="r" class="r" ></option>
-	            <option value="g" class="g" ></option>
-	            <option value="c" class="c" ></option>
-	            <option value="y" class="y" ></option>
-	            <option value="b" class="b" ></option>
-	            <option value="w" class="w" ></option>
-				      <option value="m" class="m" ></option>
-              <option class="hide" selected></option>
-	          </select>
-	      	</li>
-
-	    	<li><select onchange="fourPicked(1)" id = "1">
-	            <option value="r" class="r" ></option>
-	            <option value="g" class="g" ></option>
-	            <option value="c" class="c" ></option>
-	            <option value="y" class="y" ></option>
-	            <option value="b" class="b" ></option>
-	            <option value="w" class="w" ></option>
-              <option class="hide"  selected></option>            
-	          </select>
-	      	</li>
-
-	    	<li><select onchange="fourPicked(2)" id = "2">
-	            <option value="r" class="r" ></option>
-	            <option value="g" class="g" ></option>
-	            <option value="c" class="c" ></option>
-	            <option value="y" class="y" ></option>
-	            <option value="b" class="b" ></option>
-	            <option value="w" class="w" ></option>
-              <option class="hide"  selected></option>
-	          </select>
-	      	</li>
-
-	    	<li>
-			<select onchange="fourPicked(3)" id = "3">
-	            <option value="r" class="r" ></option>
-	            <option value="g" class="g" ></option>
-	            <option value="c" class="c" ></option>
-	            <option value="y" class="y" ></option>
-	            <option value="b" class="b" ></option>
-	            <option value="w" class="w" ></option>
-              <option class="hide" selected></option>
-	          </select>
-	      	</li>
-
-  	  	</ol>
-  	    <button id="submit-guess"></button>
+	  <ul id = "rows">
+				<li>
+					<ul class="row"> 
+						<li class="w"></li> 
+						<li class="b"></li> 
+						<li class="w"></li> 
+					</ul>
+        </li> <!-- row --> 
+        <li>
+					<ul class="row"> 
+						<li class="e"></li> 
+						<li class="w"></li> 
+						<li class="b"></li> 
+					</ul>
+        </li> <!-- row --> 
+        <li>
+					<ul class="row"> 
+						<li class="b"></li> 
+						<li class="w"></li> 
+						<li class="b"></li> 
+					</ul>
+        </li> <!-- row --> 
+			</ul><!-- rows --> 
+  	    <button id="next" onclick="main()">Next</button>
 	</div>
 </div>
 <script language="javascript" type="text/javascript" src="webhelper.js"></script>
-<script language="javascript" type="text/javascript" src="average.js"></script>
 </body>
 </html>

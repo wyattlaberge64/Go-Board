@@ -100,14 +100,10 @@ button {
 	margin-left:-20px;
 	border-radius:50%;
 	border:2px solid gray;
-  background: -4px -5px black url("button-red.png") no-repeat;
+  background: -4px -5px black url("button.png") no-repeat;
 }
 button:hover {
 	border:2px solid yellow;
-}
-
-.fourok {
-    background-image:url("button.png");
 }
 
 button:focus, select:focus {

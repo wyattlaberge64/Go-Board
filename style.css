@@ -119,6 +119,7 @@ button:focus, select:focus {
 .e { background-color:transparent; border:2px solid transparent;}
 .w { background-color:white; }
 .b { background-color:black;color:white; }
+.captured { background-color:red;}
 
 #rows {
 	background-image:url("Blank Board.jpg");

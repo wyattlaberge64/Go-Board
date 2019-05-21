@@ -9,7 +9,8 @@ var board = document.getElementById("board");
 var rows = document.getElementById("rows");
 // Wyatt - change this (so we start at 0)
 var turn=-1;
-var allCaptures=[0,0];
+var allCaptures=[];
+var myCol = 0;
 
 function setup() {
 	title.innerHTML = "Go!";
@@ -21,7 +22,7 @@ function setup() {
 
 /* Main */
 function main() {
-  nextTurn();
+	nextTurn();
 }
 
 // Populate Turns Array
@@ -75,16 +76,20 @@ function nextTurn(){
     // console.log("Row: "+row+" Column: "+column+" Stone count = "+stoneCount+" Adjusted count = "+(stoneCount+stoneCountAdjustment)+" Color: "+color);
     var myCol = rows.getElementsByTagName("li")[stoneCount];
     myCol.className=turns[turn][2];
+	if (captures.length>0){
+		captures = removeCaptures(captures,color,"e");
+	}
     if (captures&&captures[0]){
       for(let stones = 3; stones < turns[turn].length; stones++){
         captures.push(turns[turn][stones]);
       }
-      removeCaptures(captures,color);
+      captures = removeCaptures(captures,color,"captured");
     } 
   }
   else {
     alert("End of game.");
   }
+
 }
 
 function boardReset(message){
@@ -95,18 +100,19 @@ function boardReset(message){
 }
 
 
-function removeCaptures(captures,color){
+function removeCaptures(captures,color,capColor){
 	let aC = 0;
 	if (color = "w") aC = 1;
 	allCaptures[aC]+=turns[turn].length-3;
-	alert(allCaptures);
 	for(let stones = 3; stones < turns[turn].length; stones++){
         let row=turns[turn][stones][0];
         let column=turns[turn][stones][1];
         let stoneCount=(row)*9+column+1;
         let stoneCountAdjustment=(Math.floor((stoneCount-1)/9));
         stoneCount=stoneCount+stoneCountAdjustment;
+		alert("114: "+allCaptures.join('\n'));
         var myCol = rows.getElementsByTagName("li")[stoneCount];
-        myCol.className="e";
+        myCol.className=capColor;
     }
+
 }

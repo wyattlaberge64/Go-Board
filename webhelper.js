@@ -132,16 +132,35 @@ function addCapturesToScore(captures,color){
 	}
 	// note: classes start with E, so need to subtract 1 for allCaptures
 	allCaptures[classElement-1]+=captures.length;
-	refreshBox(scoreboard,allCaptures.join("|"));
+	refreshBox(scoreboard,allCaptures.join("|"), "text");
+	graveyard=deadstoneFiller(allCaptures);
+	refreshBox(deadstones,graveyard, "node");
 }
 
-function refreshBox(element,newValue){
+function refreshBox(element,newValue,type){
 	var newContent = document.createElement("div");
 	newContent.className = "content";
-	var textnode = document.createTextNode(newValue);
-	newContent.appendChild(textnode);
+	if (type=="text"){
+		var textnode = document.createTextNode(newValue);
+		newContent.appendChild(textnode);
+	}
+	else if (type=="node"){
+		newContent.appendChild(graveyard);
+	}
+	else alert("Wrong type specified in refreshBox call parameter 3");
 	var elementKids=element.childNodes[3];
 	element.replaceChild(newContent,elementKids);
+}
+
+function deadstoneFiller(allCaptures){
+	var graveyard = document.createElement("ul");
+	for (let stoneColor=0;stoneColor<2;stoneColor++){
+		for (let stoneCount=0;stoneCount<allCaptures[stoneColor];stoneCount++){
+			var newStone = document.createElement("li");
+			newStone.className = classes[stoneColor+1];
+		}
+	}
+	return graveyard;		
 }
 
 function boardReset(message){

@@ -113,7 +113,6 @@ function getStoneCount(row,column){
 }
 
 function addCapturesToScore(captures,color){
-	alert("Adding "+captures+" to color "+color);
 	let classElement=0;
 	while(classes[classElement]!=color){
 		classElement++;

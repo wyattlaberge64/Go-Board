@@ -155,11 +155,21 @@ button:active, select:active {
   border: 2px solid transparent;
 }
 
-.content li{
+#deadstones .content li {
 	width:10px;
 	height:10px;
 }
 
 #deadstones .content {
 	background-color:#ccc;
+    text-align:left;
+}
+
+#deadstones .content ul {
+    padding-left: 0;
+
+}
+#deadstones .content ul li {
+	margin:0 5px 0 0!important;
+	padding:0!important;
 }

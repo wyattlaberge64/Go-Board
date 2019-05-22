@@ -9,7 +9,7 @@ var board = document.getElementById("board");
 var rows = document.getElementById("rows");
 var allStones = rows.getElementsByTagName("li");
 var turn=-1;
-var allCaptures=[0,0,0];
+var allCaptures=[0,0];
 var captures=[];
 
 
@@ -130,8 +130,13 @@ function addCapturesToScore(captures,color){
 }
 
 function refreshScore(){
-	scoreboard=document.getElementById("scoreboard");
-	scoreboard.innerHTML = allCaptures.join("|");
+	var newScore = document.createElement("div");
+	newScore.className = "content";
+	var textnode = document.createTextNode(allCaptures.join("|"));
+	newScore.appendChild(textnode);
+	var scoreboard=document.getElementById("scoreboard");
+	scoreboard.replaceChild(newScore, scoreboard.childNodes[2]);
+	scoreboard.removeChild(scoreboard.childNodes[3]);
 }
 
 

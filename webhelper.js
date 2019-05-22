@@ -1,7 +1,7 @@
 window.onload = setup;
 
 /* Globals */
-const classes=["e","b","w","n"];
+const classes=["b","w","e","n"];
 var turns=[];
 var buttonElement = document.getElementById("next");
 var title = document.getElementById("title");
@@ -22,27 +22,15 @@ function setup() {
 	buttonElement.innerHTML = "Next";
 	turns=firstGame(turns);
 	buildBoard();
-	for (i=0;i<17;i++){
+	/* for (i=0;i<47;i++){
 		nextTurn();
 	}
+	*/
 }
 
 /* Main */
 function main() {
 	nextTurn();
-}
-
-// Populate Turns Array
-function randomBoard() {
-  turns=[];
-  for (let row=0;row<9;row++){
-    for (let col=0;col<9;col++){
-      turnVal=Math.floor(Math.random()*3);
-      turnClass=classes[turnVal];
-      let newTurn=[row,col,turnClass];
-      turns.push(newTurn);
-      }
-    }
 }	
 
 function firstGame(turns){
@@ -125,13 +113,12 @@ function getStoneCount(row,column){
 }
 
 function addCapturesToScore(captures,color){
-	// determine color of capture to store. "n" counts ALL captures.
-	classElement=0;
+	alert("Adding "+captures+" to color "+color);
+	let classElement=0;
 	while(classes[classElement]!=color){
 		classElement++;
 	}
-	// note: classes start with E, so need to subtract 1 for allCaptures
-	allCaptures[classElement-1]+=captures.length;
+	allCaptures[classElement]+=captures.length;
 	refreshBox(scoreboard,allCaptures.join("|"), "text");
 	graveyard=deadstoneFiller(allCaptures);
 	refreshBox(deadstones,graveyard, "node");
@@ -155,9 +142,10 @@ function refreshBox(element,newValue,type){
 function deadstoneFiller(allCaptures){
 	var graveyard = document.createElement("ul");
 	for (let stoneColor=0;stoneColor<2;stoneColor++){
+		console.log("Stone Color= "+stoneColor+" and turn = "+turn);
 		for (let stoneCount=0;stoneCount<allCaptures[stoneColor];stoneCount++){
 			var newStone = document.createElement("li");
-			newStone.className = classes[stoneColor];
+			newStone.className = classes[1-stoneColor];
 			graveyard.appendChild(newStone);
 		}
 	}

@@ -132,19 +132,17 @@ function addCapturesToScore(captures,color){
 	}
 	// note: classes start with E, so need to subtract 1 for allCaptures
 	allCaptures[classElement-1]+=captures.length;
-	refreshScore();
+	refreshBox(scoreboard,allCaptures.join("|"));
 }
 
-function refreshScore(){
-	var newScore = document.createElement("div");
-	newScore.className = "content";
-	var textnode = document.createTextNode(allCaptures.join("|"));
-	newScore.appendChild(textnode);
-	var scoreboardScores=document.getElementById("scoreboard").childNodes[3];
-	scoreboard.replaceChild(newScore, scoreboardScores);
-	refreshDeadStones();
+function refreshBox(element,newValue){
+	var newContent = document.createElement("div");
+	newContent.className = "content";
+	var textnode = document.createTextNode(newValue);
+	newContent.appendChild(textnode);
+	var elementKids=element.childNodes[3];
+	element.replaceChild(newContent,elementKids);
 }
-
 
 function boardReset(message){
   board.removeChild(board.childNodes[2]);
@@ -153,23 +151,3 @@ function boardReset(message){
   board.appendChild(messageArea);
 }
 
-function refreshDeadStones(){
-	var deadstonesStones=document.getElementById("deadstones").childNodes[1];
-	while (deadstonesStones.hasChildNodes()) {   
-		deadstonesStones.removeChild(deadstonesStones);
-	}
-	/*for (let stoneColor=0;stoneColor<2;stoneColor++){
-		for (let stone=0;stone<9;row++){
-			var newRow = document.createElement("li");
-			var rowNode = document.createElement("ul"); 
-			rowNode.className = "row";
-			for (let col=0;col<9;col++){
-				var turnNode = document.createElement("li");
-				turnNode.className="e";
-				rowNode.appendChild(turnNode);
-			}
-			newRow.appendChild(rowNode);
-			rows.appendChild(newRow);
-		}
-	}*/
-}

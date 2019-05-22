@@ -8,6 +8,9 @@ var title = document.getElementById("title");
 var board = document.getElementById("board");
 var rows = document.getElementById("rows");
 var allStones = rows.getElementsByTagName("li");
+var deadstones=document.getElementById("deadstones");
+var scoreboard=document.getElementById("scoreboard");
+var messages=document.getElementById("messages");
 var turn=-1;
 var allCaptures=[0,0];
 var captures=[];
@@ -19,6 +22,9 @@ function setup() {
 	buttonElement.innerHTML = "Next";
 	turns=firstGame(turns);
 	buildBoard();
+	for (i=0;i<17;i++){
+		nextTurn();
+	}
 }
 
 /* Main */
@@ -134,9 +140,8 @@ function refreshScore(){
 	newScore.className = "content";
 	var textnode = document.createTextNode(allCaptures.join("|"));
 	newScore.appendChild(textnode);
-	var scoreboard=document.getElementById("scoreboard");
-	scoreboard.replaceChild(newScore, scoreboard.childNodes[2]);
-	scoreboard.removeChild(scoreboard.childNodes[3]);
+	var scoreboardScores=document.getElementById("scoreboard").childNodes[3];
+	scoreboard.replaceChild(newScore, scoreboardScores);
 	refreshDeadStones();
 }
 
@@ -149,9 +154,9 @@ function boardReset(message){
 }
 
 function refreshDeadStones(){
-	var deadstones=document.getElementById("deadstones");
-	while (deadstones.hasChildNodes()) {   
-		deadstones.removeChild(deadstones.childNodes[2]);
+	var deadstonesStones=document.getElementById("deadstones").childNodes[1];
+	while (deadstonesStones.hasChildNodes()) {   
+		deadstonesStones.removeChild(deadstonesStones);
 	}
 	/*for (let stoneColor=0;stoneColor<2;stoneColor++){
 		for (let stone=0;stone<9;row++){

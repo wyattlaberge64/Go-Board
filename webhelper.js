@@ -137,6 +137,7 @@ function refreshScore(){
 	var scoreboard=document.getElementById("scoreboard");
 	scoreboard.replaceChild(newScore, scoreboard.childNodes[2]);
 	scoreboard.removeChild(scoreboard.childNodes[3]);
+	refreshDeadStones();
 }
 
 
@@ -145,4 +146,25 @@ function boardReset(message){
   var messageArea = document.createElement("p");
   messageArea.innerHTML=message;
   board.appendChild(messageArea);
+}
+
+function refreshDeadStones(){
+	var deadstones=document.getElementById("deadstones");
+	while (deadstones.hasChildNodes()) {   
+		deadstones.removeChild(deadstones.childNodes[2]);
+	}
+	/*for (let stoneColor=0;stoneColor<2;stoneColor++){
+		for (let stone=0;stone<9;row++){
+			var newRow = document.createElement("li");
+			var rowNode = document.createElement("ul"); 
+			rowNode.className = "row";
+			for (let col=0;col<9;col++){
+				var turnNode = document.createElement("li");
+				turnNode.className="e";
+				rowNode.appendChild(turnNode);
+			}
+			newRow.appendChild(rowNode);
+			rows.appendChild(newRow);
+		}
+	}*/
 }

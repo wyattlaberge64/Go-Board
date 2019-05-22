@@ -157,7 +157,8 @@ function deadstoneFiller(allCaptures){
 	for (let stoneColor=0;stoneColor<2;stoneColor++){
 		for (let stoneCount=0;stoneCount<allCaptures[stoneColor];stoneCount++){
 			var newStone = document.createElement("li");
-			newStone.className = classes[stoneColor+1];
+			newStone.className = classes[stoneColor];
+			graveyard.appendChild(newStone);
 		}
 	}
 	return graveyard;		

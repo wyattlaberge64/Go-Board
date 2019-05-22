@@ -150,11 +150,3 @@ function deadstoneFiller(allCaptures){
 	}
 	return graveyard;		
 }
-
-function boardReset(message){
-  board.removeChild(board.childNodes[2]);
-  var messageArea = document.createElement("p");
-  messageArea.innerHTML=message;
-  board.appendChild(messageArea);
-}
-

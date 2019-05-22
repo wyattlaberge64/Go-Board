@@ -1,27 +1,29 @@
 window.onload = setup;
 
 /* Globals */
-const classes=["e","b","w"];
+const classes=["e","b","w","n"];
 var turns=[];
 var buttonElement = document.getElementById("next");
 var title = document.getElementById("title");
 var board = document.getElementById("board");
 var rows = document.getElementById("rows");
-// Wyatt - change this (so we start at 0)
+var allStones = rows.getElementsByTagName("li");
 var turn=-1;
 var allCaptures=[0,0];
+var captures=[];
+
 
 function setup() {
 	title.innerHTML = "Go!";
 	boardReset("Here are instructions.");
 	buttonElement.innerHTML = "Next";
-  turns=firstGame(turns);
-  buildBoard();
+	turns=firstGame(turns);
+	buildBoard();
 }
 
 /* Main */
 function main() {
-  nextTurn();
+	nextTurn();
 }
 
 // Populate Turns Array
@@ -43,70 +45,104 @@ function firstGame(turns){
 }
 
 function buildBoard(){
-  while (rows.hasChildNodes()) {   
-    rows.removeChild(rows.firstChild);
-  }
+	while (rows.hasChildNodes()) {   
+		rows.removeChild(rows.firstChild);
+	}
 	for (let row=0;row<9;row++){
-    var newRow = document.createElement("li");
-    var rowNode = document.createElement("ul"); 
-    rowNode.className = "row";
-    for (let col=0;col<9;col++){
-      var turnNode = document.createElement("li");
-      turnNode.className="e";
-	    rowNode.appendChild(turnNode);
-	  }
-    newRow.appendChild(rowNode);
-    rows.appendChild(newRow);
+		var newRow = document.createElement("li");
+		var rowNode = document.createElement("ul"); 
+		rowNode.className = "row";
+		for (let col=0;col<9;col++){
+			var turnNode = document.createElement("li");
+			turnNode.className="e";
+			rowNode.appendChild(turnNode);
+		}
+		newRow.appendChild(rowNode);
+		rows.appendChild(newRow);
 	}
 }
 
 function nextTurn(){
-  turn++;
-  if (turn <= turns.length) {
-    let row = turns[turn][0];
-    let column = turns[turn][1];
-    let color= turns[turn][2];
-    let captures= turns[turn][3];
-    // each LI is a stone.  What should the count be? 
-    let stoneCount=(row)*9+column+1;
-    // alter LI count by ignoring the extra row LIs
-    let stoneCountAdjustment=(Math.floor((stoneCount-1)/9));
-    stoneCount=stoneCount+stoneCountAdjustment;
-    // console.log("Row: "+row+" Column: "+column+" Stone count = "+stoneCount+" Adjusted count = "+(stoneCount+stoneCountAdjustment)+" Color: "+color);
-    var myCol = rows.getElementsByTagName("li")[stoneCount];
-    myCol.className=turns[turn][2];
-    if (captures&&captures[0]){
-      for(let stones = 3; stones < turns[turn].length; stones++){
-        captures.push(turns[turn][stones]);
-      }
-      removeCaptures(captures,color);
-    } 
-  }
-  else {
-    alert("End of game.");
-  }
+	turn++;
+	if (turn <= turns.length) {
+		// check for stored captures from last turn and remove them 
+		if (captures.length>0){
+			removeCaptures(captures,"n","e");
+		}
+		// place new stone with color 
+		let row = turns[turn][0];
+		let column = turns[turn][1];
+		let color= turns[turn][2];
+		stoneCount=getStoneCount(row,column);
+		// target the new stone location
+		let newStone = allStones[stoneCount];
+		newStone.className=turns[turn][2];
+		// check for new captures
+		if (turns[turn][3][0]){
+			captures=[];
+			// populate captures array and color them red
+			for (let stone = 3; stone < turns[turn].length; stone++){
+				captures.push(turns[turn][stone]);
+			}
+			addCapturesToScore(captures,color);
+			removeCaptures(captures,color,"captured");
+		} 
+	}
+	else 
+	{
+		alert("End of game.");
+	}
 }
+
+
+/* removeCaptures changes color of stones sent as an array of ordered pairs, and saves to score */
+function removeCaptures(captures,color,capColor){
+	// for each captured stone
+	for (let stone = 0; stone < captures.length; stone++){
+		// count stones until captured stone
+        let row=captures[stone][0];
+        let column=captures[stone][1];
+        let stoneCount=row*9+column+1;
+		stoneCount=getStoneCount(row,column);
+		let newStone = allStones[stoneCount];
+		newStone.className=capColor;
+    }
+}
+
+function getStoneCount(row,column){
+	// each LI is a stone.  What should the count be? 
+	let stoneCount=(row)*9+column+1;
+	// alter LI count by ignoring the extra row LIs
+	let stoneCountAdjustment=(Math.floor((stoneCount-1)/9));
+	stoneCount=stoneCount+stoneCountAdjustment;
+	return stoneCount;
+}
+
+function addCapturesToScore(captures,color){
+	// determine color of capture to store. "n" counts ALL captures.
+	classElement=0;
+	while(classes[classElement]!=color){
+		classElement++;
+	}
+	// note: classes start with E, so need to subtract 1 for allCaptures
+	allCaptures[classElement-1]+=captures.length;
+	refreshScore();
+}
+
+function refreshScore(){
+	var newScore = document.createElement("div");
+	newScore.className = "content";
+	var textnode = document.createTextNode(allCaptures.join("|"));
+	newScore.appendChild(textnode);
+	var scoreboard=document.getElementById("scoreboard");
+	scoreboard.replaceChild(newScore, scoreboard.childNodes[2]);
+	scoreboard.removeChild(scoreboard.childNodes[3]);
+}
+
 
 function boardReset(message){
   board.removeChild(board.childNodes[2]);
   var messageArea = document.createElement("p");
   messageArea.innerHTML=message;
   board.appendChild(messageArea);
-}
-
-
-function removeCaptures(captures,color){
-	let aC = 0;
-	if (color = "w") aC = 1;
-	allCaptures[aC]+=turns[turn].length-3;
-	alert(allCaptures);
-	for(let stones = 3; stones < turns[turn].length; stones++){
-        let row=turns[turn][stones][0];
-        let column=turns[turn][stones][1];
-        let stoneCount=(row)*9+column+1;
-        let stoneCountAdjustment=(Math.floor((stoneCount-1)/9));
-        stoneCount=stoneCount+stoneCountAdjustment;
-        var myCol = rows.getElementsByTagName("li")[stoneCount];
-        myCol.className="e";
-    }
 }

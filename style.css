@@ -100,14 +100,10 @@ button {
 	margin-left:-20px;
 	border-radius:50%;
 	border:2px solid gray;
-  background: -4px -5px black url("button-red.png") no-repeat;
+  background: -4px -5px black url("button.png") no-repeat;
 }
 button:hover {
 	border:2px solid yellow;
-}
-
-.fourok {
-    background-image:url("button.png");
 }
 
 button:focus, select:focus {
@@ -119,6 +115,7 @@ button:focus, select:focus {
 .e { background-color:transparent; border:2px solid transparent;}
 .w { background-color:white; }
 .b { background-color:black;color:white; }
+.captured { background-color:red;}
 
 #rows {
 	background-image:url("Blank Board.jpg");

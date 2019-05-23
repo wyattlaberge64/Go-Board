@@ -1,13 +1,16 @@
 window.onload = setup;
 
 /* Globals */
-const classes=["e","b","w","n"];
+const classes=["b","w","e","n"];
 var turns=[];
 var buttonElement = document.getElementById("next");
 var title = document.getElementById("title");
 var board = document.getElementById("board");
 var rows = document.getElementById("rows");
 var allStones = rows.getElementsByTagName("li");
+var deadstones=document.getElementById("deadstones");
+var scoreboard=document.getElementById("scoreboard");
+var messages=document.getElementById("messages");
 var turn=-1;
 var allCaptures=[0,0];
 var captures=[];
@@ -19,24 +22,15 @@ function setup() {
 	buttonElement.innerHTML = "Next";
 	turns=firstGame(turns);
 	buildBoard();
+	/* for (i=0;i<47;i++){
+		nextTurn();
+	}
+	*/
 }
 
 /* Main */
 function main() {
 	nextTurn();
-}
-
-// Populate Turns Array
-function randomBoard() {
-  turns=[];
-  for (let row=0;row<9;row++){
-    for (let col=0;col<9;col++){
-      turnVal=Math.floor(Math.random()*3);
-      turnClass=classes[turnVal];
-      let newTurn=[row,col,turnClass];
-      turns.push(newTurn);
-      }
-    }
 }	
 
 function firstGame(turns){
@@ -119,30 +113,40 @@ function getStoneCount(row,column){
 }
 
 function addCapturesToScore(captures,color){
-	// determine color of capture to store. "n" counts ALL captures.
-	classElement=0;
+	let classElement=0;
 	while(classes[classElement]!=color){
 		classElement++;
 	}
-	// note: classes start with E, so need to subtract 1 for allCaptures
-	allCaptures[classElement-1]+=captures.length;
-	refreshScore();
+	allCaptures[classElement]+=captures.length;
+	refreshBox(scoreboard,allCaptures.join("|"), "text");
+	graveyard=deadstoneFiller(allCaptures);
+	refreshBox(deadstones,graveyard, "node");
 }
 
-function refreshScore(){
-	var newScore = document.createElement("div");
-	newScore.className = "content";
-	var textnode = document.createTextNode(allCaptures.join("|"));
-	newScore.appendChild(textnode);
-	var scoreboard=document.getElementById("scoreboard");
-	scoreboard.replaceChild(newScore, scoreboard.childNodes[2]);
-	scoreboard.removeChild(scoreboard.childNodes[3]);
+function refreshBox(element,newValue,type){
+	var newContent = document.createElement("div");
+	newContent.className = "content";
+	if (type=="text"){
+		var textnode = document.createTextNode(newValue);
+		newContent.appendChild(textnode);
+	}
+	else if (type=="node"){
+		newContent.appendChild(graveyard);
+	}
+	else alert("Wrong type specified in refreshBox call parameter 3");
+	var elementKids=element.childNodes[3];
+	element.replaceChild(newContent,elementKids);
 }
 
-
-function boardReset(message){
-  board.removeChild(board.childNodes[2]);
-  var messageArea = document.createElement("p");
-  messageArea.innerHTML=message;
-  board.appendChild(messageArea);
+function deadstoneFiller(allCaptures){
+	var graveyard = document.createElement("ul");
+	for (let stoneColor=0;stoneColor<2;stoneColor++){
+		console.log("Stone Color= "+stoneColor+" and turn = "+turn);
+		for (let stoneCount=0;stoneCount<allCaptures[stoneColor];stoneCount++){
+			var newStone = document.createElement("li");
+			newStone.className = classes[1-stoneColor];
+			graveyard.appendChild(newStone);
+		}
+	}
+	return graveyard;		
 }

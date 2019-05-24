@@ -10,18 +10,21 @@ html {
 	position:absolute;
 	border-radius:5px;
 }
-#sidebar div{
-	width:160px;
+#sidebar div {
+	width:150px;
 	text-align:center;
 }
-#sidebar div h2{
-	margin:0px auto;
+#sidebar div h2 {
+	margin:5px auto;
+	width:180px;
+	text-align:center;
+	display:block;
 }
 #sidebar div .content{
 	border:1px solid black;
 	border-radius:5px;
 	margin:5px;
-	padding:5px;
+	padding:10px;
 }
 #scoreboard{}
 #messages{}
@@ -155,6 +158,11 @@ button:active, select:active {
   border: 2px solid transparent;
 }
 
+.content {
+	padding:10px;
+	font-size:12pt;
+}
+
 #deadstones .content li {
 	width:10px;
 	height:10px;
@@ -173,4 +181,13 @@ button:active, select:active {
 #deadstones .content ul li {
 	margin:0 5px 0 0!important;
 	padding:0!important;
+}
+
+.highlight {
+	background-color:#f7ed96;
+	padding:10px;
+	font-size:12pt;
+	border:1px solid black;
+	border-radius:5px;
+	margin:5px;
 }

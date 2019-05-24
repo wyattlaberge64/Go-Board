@@ -33,7 +33,7 @@ function main() {
 
 function firstGame(turns){
 	turns = [[4,3,"b",[]],[4,5,"w",[]],[4,4,"b",[]],[3,5,"w",[]],[5,5,"b",[]],[5,6,"w",[]],[6,6,"b",[]],[6,5,"w",[]],[5,4,"b",[]],[7,6,"w",[]],[6,7,"b",[]],[7,7,"w",[]],[6,4,"b",[]],[7,5,"w",[]],[4,6,"b",[]],[5,7,"w",[]],[4,7,"b",[]],[6,8,"w",[6,6],[6,7]],[2,5,"b",[]],[3,6,"w",[]],[2,6,"b",[]],[3,7,"w",[]],[3,4,"b",[]],[4,1,"w",[]],[2,7,"b",[]],[4,8,"w",[4,6],[4,7]],[2,1,"b",[]],[6,2,"w",[]],[5,2,"b",[]],[5,1,"w",[]],[7,2,"b",[]],[2,2,"w",[]],[1,2,"b",[]],[6,3,"w",[]],[7,3,"b",[]],[7,1,"w",[]],[7,4,"b",[]],[2,3,"w",[]],[3,1,"b",[]],[2,4,"w",[]],[3,2,"b",[]],[1,5,"w",[]],[1,6,"b",[]],[1,1,"w",[]],[1,4,"b",[]],[1,3,"w",[]],[0,5,"b",[1,5]],[0,2,"w",[1,2]],[0,4,"b",[]],[0,3,"w",[]],[5,3,"b",[]],[6,1,"w",[]],[8,1,"b",[]],[1,0,"w",[]],[7,0,"b",[]],[8,2,"w",[]],[8,3,"b",[8,2]],[6,0,"w",[]],[4,0,"b",[]],[2,0,"w",[]],[3,0,"b",[]],[0,7,"w",[]],[1,7,"b",[]],[8,5,"w",[]],[4,2,"b",[]],[8,0,"w",[7,0]],[8,2,"b",[]],[8,4,"w",[]],[7,0,"b",[8,0]],[2,8,"w",[]],[1,8,"b",[]],[8,0,"w",[7,0]],[0,1,"b",[]],[0,0,"w",[0,1]],[7,0,"b",[8,0]],[0,6,"w",[]],[0,8,"b",[0,6],[0,7]],[8,0,"w",[7,0]],[0,6,"b",[]],[3,8,"w",],[3,8,"captured",]];
-	messages=[[26,"b has been captured again"],[57,"b makes another capture to try to make up for lost ground"],[47,"b's first capture"],[18,"First capture of the game"],[74,"w makes a new capture"],[48,"w retaliates by capturing another one of b's stone"],[72,"We got ourselves a back 'n' forth going on here"]];
+	messages=[[18,"First capture of the game"],[26,"b has been captured again"],[47,"b's first capture"],[48,"w retaliates by capturing another one of b's stone"],[57,"b makes another capture to try to make up for lost ground"],[72,"We got ourselves a back 'n' forth going on here"],[74,"w makes a new capture"]];	
 	return turns;
 }
 
@@ -67,6 +67,14 @@ function nextTurn(){
 		let row = turns[turn][0];
 		let column = turns[turn][1];
 		let color= turns[turn][2];
+		message=-1;
+		while(message<messages.length){
+			message++;
+			if(messages[message][0]==turn){
+			let messageText = messages[turn][1];
+			alert(messageText);
+			}
+		}
 		stoneCount=getStoneCount(row,column);
 		// target the new stone location
 		let newStone = allStones[stoneCount];

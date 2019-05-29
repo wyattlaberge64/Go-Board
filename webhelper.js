@@ -28,7 +28,8 @@ function setup() {
 
 /* Main */
 function main() {
-	nextTurn();
+	turn++;
+	nextTurn("next");
 }	
 
 function firstGame(turns){
@@ -55,8 +56,7 @@ function buildBoard(){
 	}
 }
 
-function nextTurn(){
-	turn++;
+function nextTurn(next){
 	if (turn+1 < turns.length) {
 		// check for stored captures from last turn and remove them 
 		if (captures.length>0){
@@ -70,7 +70,12 @@ function nextTurn(){
 		stoneCount=getStoneCount(row,column);
 		// target the new stone location
 		let newStone = allStones[stoneCount];
-		newStone.className=turns[turn][2];
+		if(next=="next"){
+			newStone.className=turns[turn][2];
+		}
+		else{
+			newStone.className="e";
+		}
 		// clear previous messages
 		refreshBox(messages,"","text");
 		// check for new messages
@@ -170,3 +175,20 @@ function deadstoneFiller(allCaptures){
 	return graveyard;		
 }
 
+function reverseMain(){
+	turn--;
+	removeLastTurn();
+}
+
+function removeLastTurn(){
+	if(turn<0){
+		alert("Game empty press next button");
+	}
+	else{
+		nextTurn("previous");
+	}
+	
+	
+	
+	
+}

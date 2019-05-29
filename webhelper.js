@@ -63,7 +63,7 @@ function buildBoard(){
 }
 
 function nextTurn(next){
-	if (turn+1 < turns.length) {
+	if (turn+1 <= turns.length) {
 		// check for stored captures from last turn and remove them 
 		if (captures.length>0){
 			removeCaptures(captures,"n","e");

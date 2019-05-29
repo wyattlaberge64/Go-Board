@@ -26,6 +26,12 @@ function setup() {
 	*/
 }
 
+/* recordTurns - by Mr. M*/
+function recordTurns() {
+	alert("Recording....");
+}	
+
+
 /* Main */
 function main() {
 	turn++;
@@ -187,8 +193,5 @@ function removeLastTurn(){
 	else{
 		nextTurn("previous");
 	}
-	
-	
-	
-	
+
 }

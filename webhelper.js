@@ -14,6 +14,7 @@ var messages=document.getElementById("messages");
 var turn=-1;
 var allCaptures=[0,0];
 var captures=[];
+var backwards = false;
 
 function setup() {
 	title.innerHTML = "Go!";
@@ -26,16 +27,16 @@ function setup() {
 	*/
 }
 
-/* recordTurns - by Mr. M*/
-function recordTurns() {
-	alert("Recording....");
-}	
-
-
 /* Main */
 function main() {
-	turn++;
-	nextTurn("next");
+	if(backwards==true){
+		backwards=false;
+		nextTurn("next");
+	}
+	else {
+		turn++;
+		nextTurn("next");
+	}
 }	
 
 function firstGame(turns){
@@ -182,8 +183,14 @@ function deadstoneFiller(allCaptures){
 }
 
 function reverseMain(){
-	turn--;
-	removeLastTurn();
+	if(backwards==false){
+		backwards=true;
+		removeLastTurn();
+	}
+	else{
+		turn--;
+		removeLastTurn();
+	}
 }
 
 function removeLastTurn(){
@@ -193,5 +200,8 @@ function removeLastTurn(){
 	else{
 		nextTurn("previous");
 	}
-
+	
+	
+	
+	
 }

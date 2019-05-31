@@ -12,8 +12,11 @@ var deadstones=document.getElementById("deadstones");
 var scoreboard=document.getElementById("scoreboard");
 var messages=document.getElementById("messages");
 var turn=-1;
+var row=-1;
+var column=-1;
 var allCaptures=[0,0];
-var captures=[];
+var newCaptures=[];
+var oldCaptures=[];
 var backwards = false;
 
 function setup() {
@@ -21,10 +24,11 @@ function setup() {
 	buttonElement.innerHTML = "Next";
 	turns=firstGame(turns);
 	buildBoard();
-	/* for (i=0;i<72;i++){
-		nextTurn();
+	for (i=1;i<17;i++){
+		turn++;
+		nextTurn("next");
 	}
-	*/
+	
 }
 
 /* Main */
@@ -65,43 +69,131 @@ function buildBoard(){
 
 function nextTurn(next){
 	if (turn+1 <= turns.length) {
-		// check for stored captures from last turn and remove them 
-		if (captures.length>0){
-			removeCaptures(captures,"n","e");
-		}
+		// remove red circles from board and clear oldCaptures
+		if (turn>1 && turns[turn-1][3][0]>-1) removeCaptures(oldCaptures,"e");
 		// place new stone with color 
-		let row = turns[turn][0];
-		let column = turns[turn][1];
-		let color= turns[turn][2];
-		console.log("Turn: "+(turn+1)+" row: "+row+" column: "+column+" color: "+color);
-		stoneCount=getStoneCount(row,column);
-		// target the new stone location
+		row = turns[turn][0];
+		column = turns[turn][1];
+		color= turns[turn][2];
+		let stoneCount=getStoneCount(row,column);
 		let newStone = allStones[stoneCount];
-		if(next=="next"){
-			newStone.className=turns[turn][2];
-		}
-		else{
-			newStone.className="e";
-		}
+		console.log("Turn: "+(turn+1)+" row: "+row+" column: "+column+" color: "+color);
+		// determine color based on function parameter indicating next / previous 
+		newStone.className = (next=="next") ? turns[turn][2] : "e";
 		// clear previous messages
 		refreshBox(messages,"","text");
 		// check for new messages
 		showMessage(turn);
-		// check for new captures
-		if (turns[turn][3][0]>-1){
-			captures=[];
-			// populate captures array and color them red
-			for (let stone = 3; stone < turns[turn].length; stone++){
-				captures.push(turns[turn][stone]);
-			}
-			addCapturesToScore(captures,color);
-			removeCaptures(captures,color,"captured");
-		} 
+		// check for new captures and process them, leaving red circles
+		if (turns[turn][3][0]>-1) checkCaptures(turn);
 	}
 	else 
 	{
 		alert("End of game.");
 	}
+}
+
+function getStoneCount(row,column){
+	// each LI is a stone.  What should the count be? 
+	let stoneCount=(row)*9+column+1;
+	// alter LI count by ignoring the extra row LIs
+	let stoneCountAdjustment=(Math.floor((stoneCount-1)/9));
+	stoneCount=stoneCount+stoneCountAdjustment;
+	return stoneCount;
+}
+
+function checkCaptures(turn){
+	if(backwards==false){
+		// get captures from turns array
+		newCaptures=createCapturesArray(turn);
+		// add captures to score
+		addCapturesToScore(newCaptures,color);
+		// empy newCaptures array and replace with red circles
+		oldCaptures=removeCaptures(newCaptures,"captured");
+	}
+	else{
+		// get captures from previous turn
+		newCaptures=createCapturesArray(turn-1);
+		// remove captures from score
+		addCapturesToScore(newCaptures*-1,color);
+		// remove red stones from board
+		oldCaptures=removeCaptures(newCaptures,"captured");
+	}
+}
+
+function createCapturesArray(turn){
+	newCaptures=[];
+	// populate captures array and color them red
+	for (let stone = 3; stone < turns[turn].length; stone++){
+		newCaptures.push(turns[turn][stone]);
+	}
+	return newCaptures;
+}
+
+function addCapturesToScore(captures,color){
+	let classElement=0;
+	while(classes[classElement]!=color){
+		classElement++;
+	}
+	if(backwards==false){
+		allCaptures[classElement]+=newCaptures.length;
+	}
+	else{
+		allCaptures[classElement]-=newCaptures.length;
+		console.log(allCaptures[classElement]+ "test "+newCaptures.length);
+	}
+	refreshBox(scoreboard,allCaptures.join("|"), "text");
+	graveyard=deadstoneFiller(allCaptures);
+	refreshBox(deadstones,graveyard, "node");
+}
+
+/* removeCaptures changes color of stones sent as an array of ordered pairs, and saves to score */
+function removeCaptures(captures,capColor){
+	// for each captured stone
+	for (let stone = 0; stone < captures.length; stone++){
+		// count stones until captured stone
+        let row=newCaptures[stone][0];
+        let column=newCaptures[stone][1];
+        let stoneCount=row*9+column+1;
+		stoneCount=getStoneCount(row,column);
+		let newStone = allStones[stoneCount];
+		newStone.className=capColor;
+    }
+	// if we're removing previous captures
+	if (capColor=="e") {
+		console.log("Turn: "+(turn+1)+" New Captures: "+newCaptures.join("|")+"Old Captures: "+oldCaptures.join("|")+" Color: "+color+" CaptureColor: "+capColor);
+		oldCaptures=[];
+	}
+	// if we're removing new captures
+	else { 
+		newCaptures=captures.slice();
+		console.log("Turn: "+(turn+1)+" New Captures: "+newCaptures.join("|")+"Old Captures: "+oldCaptures.join("|")+" Color: "+color+" CaptureColor: "+capColor);
+		oldCaptures=captures.slice();
+		newCaptures=[];
+	}
+}
+
+function removeOldCaptures(oldCaptures){
+	if (oldCaptures.length>0){
+		removeCaptures(oldCaptures,"n","e");
+		oldCaptures=[];
+	}
+	return oldCaptures;
+}
+
+function refreshBox(element,newValue,type){
+	var newContent = document.createElement("div");
+	newContent.className = "content";
+	if (type=="text"){
+		var textnode = document.createTextNode(newValue);
+		newContent.appendChild(textnode);
+	}
+	else if (type=="node"){
+		newContent.appendChild(graveyard);
+	}
+	else alert("Wrong type specified in refreshBox call parameter 3");
+	var elementKids=element.childNodes[3];
+	element.replaceChild(newContent,elementKids);
 }
 
 /* check for messages and display them */
@@ -118,56 +210,6 @@ function showMessage(turn){
 		messageMatch++;
 	}
 	return clearMessage;
-}
-
-/* removeCaptures changes color of stones sent as an array of ordered pairs, and saves to score */
-function removeCaptures(captures,color,capColor){
-	// for each captured stone
-	console.log("Problem Turn: "+(turn+1)+" Captures: "+captures.join("|")+" Color: "+color+" CaptureColor: "+capColor);
-	for (let stone = 0; stone < captures.length; stone++){
-		// count stones until captured stone
-        let row=captures[stone][0];
-        let column=captures[stone][1];
-        let stoneCount=row*9+column+1;
-		stoneCount=getStoneCount(row,column);
-		let newStone = allStones[stoneCount];
-		newStone.className=capColor;
-    }
-}
-
-function getStoneCount(row,column){
-	// each LI is a stone.  What should the count be? 
-	let stoneCount=(row)*9+column+1;
-	// alter LI count by ignoring the extra row LIs
-	let stoneCountAdjustment=(Math.floor((stoneCount-1)/9));
-	stoneCount=stoneCount+stoneCountAdjustment;
-	return stoneCount;
-}
-
-function addCapturesToScore(captures,color){
-	let classElement=0;
-	while(classes[classElement]!=color){
-		classElement++;
-	}
-	allCaptures[classElement]+=captures.length;
-	refreshBox(scoreboard,allCaptures.join("|"), "text");
-	graveyard=deadstoneFiller(allCaptures);
-	refreshBox(deadstones,graveyard, "node");
-}
-
-function refreshBox(element,newValue,type){
-	var newContent = document.createElement("div");
-	newContent.className = "content";
-	if (type=="text"){
-		var textnode = document.createTextNode(newValue);
-		newContent.appendChild(textnode);
-	}
-	else if (type=="node"){
-		newContent.appendChild(graveyard);
-	}
-	else alert("Wrong type specified in refreshBox call parameter 3");
-	var elementKids=element.childNodes[3];
-	element.replaceChild(newContent,elementKids);
 }
 
 function deadstoneFiller(allCaptures){
@@ -200,8 +242,4 @@ function removeLastTurn(){
 	else{
 		nextTurn("previous");
 	}
-	
-	
-	
-	
 }

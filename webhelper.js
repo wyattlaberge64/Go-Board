@@ -106,8 +106,10 @@ function nextTurn(next){
 		showMessage(turn);
 		// check for new captures going forwards and remove them, leaving red circles
 		if (backwards==false && turns[turn][3][0]>-1) oldCaptures=checkCaptures(turn);
-
-		else if (backwards==true && turns[turn-1][3][0]>-1) oldCaptures=checkCaptures(turn-1);
+		// check for old captures going backwards and add red circles
+		else if (backwards==true && turns[turn-2][3][0]>-1) oldCaptures=addRedCaptures(turn-2);
+		// check for new captures going backwards and add black or white circles
+		else if (backwards==true && turns[turn-1][3][0]>-1) oldCaptures=addUncaptured(turn-1);
 	}
 	else alert("End of game.");
 }
@@ -124,24 +126,13 @@ function getStoneCount(row,column){
 
 
 function checkCaptures(turn){
-	if (backwards==false) {
-		// get captures from turns array
-		newCaptures=createCapturesArray(turn);
-		// add captures to score
-		addCapturesToScore(newCaptures,color);
-		// empy newCaptures array and replace with red circles
-		oldCaptures=removeCaptures(newCaptures,"captured");
-		return oldCaptures;
-	}
-	else if (backwards==true) {
-		// get captures from previous turn
-		newCaptures=createCapturesArray(turn-1);
-		// remove captures from score
-		addCapturesToScore(newCaptures*-1,color);
-		// remove red stones from board
-		oldCaptures=removeCaptures(newCaptures,"captured");
-		return oldCaptures;
-	}
+	// get captures from turns array
+	newCaptures=createCapturesArray(turn);
+	// add captures to score
+	addCapturesToScore(newCaptures,color);
+	// empy newCaptures array and replace with red circles
+	oldCaptures=removeCaptures(newCaptures,"captured");
+	return oldCaptures;
 }
 
 
@@ -161,10 +152,10 @@ function addCapturesToScore(captures,color){
 		classElement++;
 	}
 	if(backwards==false){
-		allCaptures[classElement]+=newCaptures.length;
+		allCaptures[classElement]+=captures.length;
 	}
 	else{
-		allCaptures[classElement]-=newCaptures.length;
+		allCaptures[classElement]-=captures.length;
 	}
 	refreshBox(scoreboard,allCaptures.join("|"), "text");
 	graveyard=deadstoneFiller(allCaptures);
@@ -196,11 +187,21 @@ function removeCaptures(captures,capColor){
 }
 
 
-function removeOldCaptures(oldCaptures){
-	if (oldCaptures.length>0){
-		removeCaptures(oldCaptures,"n","e");
-		oldCaptures=[];
-	}
+function addRedCaptures(oldCaptures){
+	// get captures from two turns ago
+	oldCaptures=createCapturesArray(turn-2);
+	// add red stones to board
+	oldCaptures=removeCaptures(oldCaptures,"captured");
+	return oldCaptures;
+}
+
+function addUncaptured(oldCaptures){
+	// get captures from previous turn
+	newCaptures=createCapturesArray(turn-1);
+	// remove captures from score
+	addCapturesToScore(newCaptures*-1,color);
+	// remove red stones from board
+	oldCaptures=removeCaptures(newCaptures,"captured");
 	return oldCaptures;
 }
 

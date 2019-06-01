@@ -89,8 +89,8 @@ function buildBoard(){
 
 function nextTurn(next){
 	if (turn+1 <= turns.length) {
-		// remove red circles from board and clear oldCaptures
-		if (turn>1 && turns[turn-1][3][0]>-1) removeCaptures(oldCaptures,"e");
+		// check for old captures and remove red circles from board
+		if (turn>1 && turns[turn-1][3][0]>-1) oldCaptures=removeCaptures(oldCaptures,"e");
 		// place new stone with color
 		row = turns[turn][0];
 		column = turns[turn][1];
@@ -104,8 +104,10 @@ function nextTurn(next){
 		refreshBox(messages,"","text");
 		// check for new messages
 		showMessage(turn);
-		// check for new captures and process them, leaving red circles
-		if (turns[turn][3][0]>-1) oldCaptures=checkCaptures(turn);
+		// check for new captures going forwards and remove them, leaving red circles
+		if (backwards==false && turns[turn][3][0]>-1) oldCaptures=checkCaptures(turn);
+
+		else if (backwards==true && turns[turn-1][3][0]>-1) oldCaptures=checkCaptures(turn-1);
 	}
 	else alert("End of game.");
 }
@@ -131,7 +133,7 @@ function checkCaptures(turn){
 		oldCaptures=removeCaptures(newCaptures,"captured");
 		return oldCaptures;
 	}
-	else {
+	else if (backwards==true) {
 		// get captures from previous turn
 		newCaptures=createCapturesArray(turn-1);
 		// remove captures from score

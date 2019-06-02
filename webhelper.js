@@ -24,22 +24,24 @@ function setup() {
 	buttonElement.innerHTML = "Next";
 	turns=firstGame(turns);
 	buildBoard();
+	/* auto-advance */
+	/*
 	for (i=1;i<17;i++){
 		turn++;
 		nextTurn("next");
 	}
-
+	*/
 }
 
 /* Main */
 function main() {
 	if(backwards==true){
 		backwards=false;
-		nextTurn("next");
+		nextTurn();
 	}
 	else {
 		turn++;
-		nextTurn("next");
+		nextTurn();
 	}
 }
 
@@ -59,7 +61,7 @@ function removeLastTurn(){
 		alert("Game empty press next button");
 	}
 	else{
-		nextTurn("previous");
+		nextTurn();
 	}
 }
 
@@ -88,27 +90,21 @@ function buildBoard(){
 }
 
 /* Next Turn works forwards and backwards */
-function nextTurn(next){
+function nextTurn(){
 	if (turn+1 <= turns.length) {
 		// check for old captures and remove red circles from board
-		if (turn>1 && turns[turn-1][3][0]>-1) oldCaptures=removeCaptures(oldCaptures,"e");
-		// place new stone with color
-		row = turns[turn][0];
-		column = turns[turn][1];
-		color = turns[turn][2];
-		let stoneCount=getStoneCount(row,column);
-		let newStone = allStones[stoneCount];
-		console.log("Turn: "+(turn+1)+" row: "+row+" column: "+column+" color: "+color);
-		// determine color based on function parameter indicating next / previous
-		newStone.className = (next=="next") ? turns[turn][2] : "e";
-		// check for new messages */
-		message = (backwards==false) ? showMessage(turn) : showMessage(turn-1);
+		if (backwards==false && turn>1 && turns[turn-1][3][0]>-1) oldCaptures=removeColoredCaptures(oldCaptures);
+		// place new stone with color of current turn or empty if going backwards
+		placeStone(turn);
 		// check for new captures going forwards and remove them, leaving red circles
-		if (backwards==false && turns[turn][3][0]>-1) oldCaptures=checkCaptures(turn);
+		if (backwards==false  && turns[turn][3][0]>-1) oldCaptures=removeCaptures(turn);
 		// check for old captures going backwards and add red circles
 		else if (backwards==true && turns[turn-2][3][0]>-1) oldCaptures=addRedCaptures(turn-2);
 		// check for new captures going backwards and add black or white circles
 		else if (backwards==true && turns[turn-1][3][0]>-1) oldCaptures=addUncaptured(turn-1);
+		// closing the else's
+		else oldCaptures=[];
+		message = (backwards==false) ? showMessage(turn) : showMessage(turn-1);
 	}
 	else alert("End of game.");
 }
@@ -123,26 +119,75 @@ function getStoneCount(row,column){
 	return stoneCount;
 }
 
-/* Check Captures works forwards only */
-function checkCaptures(turn){
-	// get captures from turns array
+function placeStone(turn){
+	row = turns[turn][0];
+	column = turns[turn][1];
+	color = (backwards==false) ? turns[turn][2] : "e";
+	let stoneCount=getStoneCount(row,column);
+	let newStone = allStones[stoneCount];
+	// determine color based on function parameter indicating next / previous
+	newStone.className = color;
+	console.log("Turn: "+(turn+1)+" row: "+row+" column: "+column+" color: "+color);
+}
+
+/* Remove Captures works forwards only */
+function removeCaptures(turn){
 	newCaptures=createCapturesArray(turn);
-	// add captures to score
 	addCapturesToScore(newCaptures,color);
-	// empy newCaptures array and replace with red circles
-	oldCaptures=removeCaptures(newCaptures,"captured");
+	colorCaptures(captures,"captured");
+	oldCaptures=newCaptures.slice();
+	newCaptures=[];
 	return oldCaptures;
 }
 
 /* Create Captures Array works forwards and backwards */
 function createCapturesArray(turn){
-	newCaptures=[];
+	captures=[];
 	// populate captures array and color them red
 	for (let stone = 3; stone < turns[turn].length; stone++){
-		newCaptures.push(turns[turn][stone]);
+		captures.push(turns[turn][stone]);
 	}
-	return newCaptures;
+	return captures;
 }
+
+/* Color Captures works backwards & forwards */
+function colorCaptures(captures, color){
+	for (let stone = 0; stone < captures.length; stone++){
+		let row=captures[stone][0];
+		let column=captures[stone][1];
+		let stoneCount=row*9+column+1;
+		stoneCount=getStoneCount(row,column);
+		let newStone = allStones[stoneCount];
+		newStone.className=color;
+	}
+}
+
+/* removeColoredCaptures works forwards only */
+function removeColoredCaptures(captures){
+	colorCaptures(captures, "e");
+	oldCaptures=[];
+	return oldCaptures;
+}
+
+/* Add Red Captures works backwards only */
+function addRedCaptures(turn){
+	oldCaptures=createCapturesArray(turn);
+	colorCaptures(captures, "captured");
+	return oldCaptures;
+}
+
+/* Add UnCaptured works backwards */
+function addUncaptured(turn){
+	captures=createCapturesArray(turn);
+	color=turns[turn-1][2];
+	colorCaptures(captures,color);
+	let capScore=captures.length
+	addCapturesToScore(captures,turns[turn][2]);
+	oldCaptures=[];
+	return oldCaptures;
+}
+
+
 
 /* Add Captures to Score works forwards and backwards */
 function addCapturesToScore(captures,color){
@@ -162,66 +207,7 @@ function addCapturesToScore(captures,color){
 }
 
 
-/* removeCaptures works forwards only */
-function removeCaptures(captures,capColor){
-	for (let stone = 0; stone < captures.length; stone++){
-		// count stones until captured stone
-        let row=captures[stone][0];
-        let column=captures[stone][1];
-        let stoneCount=row*9+column+1;
-		stoneCount=getStoneCount(row,column);
-		let newStone = allStones[stoneCount];
-		newStone.className=capColor;
-    }
-	// if we're removing previous captures
-	if (capColor=="e") {
-		oldCaptures=[];
-	}
-	// if we're removing new captures
-	else if (capColor=="captured") {
-		oldCaptures=captures.slice();
-		newCaptures=[];
-	}
-	return oldCaptures;
-}
-
-
 /* Deadstone filler works forwards */
-function deadstoneFiller(allCaptures){
-	var graveyard = document.createElement("ul");
-	for (let stoneColor=0;stoneColor<2;stoneColor++){
-		for (let stoneCount=0;stoneCount<allCaptures[stoneColor];stoneCount++){
-			var newStone = document.createElement("li");
-			newStone.className = classes[1-stoneColor];
-			graveyard.appendChild(newStone);
-		}
-	}
-	return graveyard;
-}
-
-
-/* Add Red Captures works backwards */
-function addRedCaptures(oldCaptures){
-	// get captures from two turns ago
-	oldCaptures=createCapturesArray(turn-2);
-	// add red stones to board
-	oldCaptures=removeCaptures(oldCaptures,"captured");
-	return oldCaptures;
-}
-
-/* Add UnCaptured works backwards */
-function addUncaptured(oldCaptures){
-	// get captures from previous turn
-	newCaptures=createCapturesArray(turn-1);
-	// remove captures from score
-	addCapturesToScore(newCaptures*-1,color);
-	// remove red stones from board
-	oldCaptures=removeCaptures(newCaptures,"captured");
-	return oldCaptures;
-}
-
-
-/* Deadstone remover works backwards */
 function deadstoneFiller(allCaptures){
 	var graveyard = document.createElement("ul");
 	for (let stoneColor=0;stoneColor<2;stoneColor++){

@@ -22,8 +22,14 @@ var backwards = false;
 function setup() {
 	title.innerHTML = "Go!";
 	buttonElement.innerHTML = "Next";
-	turns=firstGame(turns);
 	buildBoard();
+	let whichGame=prompt("full=1, teaching=0");
+	if(whichGame==1){
+		turns=firstGame(turns);
+	}
+	else{
+		turns = teachingGame(turns);
+	}
 	/* auto-advance */
 	/*
 	for (i=1;i<17;i++){
@@ -63,6 +69,11 @@ function removeLastTurn(){
 	else{
 		nextTurn();
 	}
+}
+function teachingGame(turns){
+	turns = [[1,1,"b",[]],[1,2,"w",[]],[2,2,"b",[]],[1,0,"w",[]],[1,3,"b",[]],[2,1,"w",[]],[0,2,"b",[1,2]],[0,1,"w",[]],[0,0,"b",[0,1]],[3,0,"w",[]],[2,0,"b",[1,0]],[3,1,"w",[]],[1,0,"b",[]]];
+	gameMessages=[[13,"Now, you could. So I'm blocking that."],[12,"And I can't take you back because that would be Ko."],[11,"Yes, I suppose so. Atari!"],[10," Shouldn\t you have said Atari again?"],[9," That would be Ko, but since I can remove the threat, I will."],[8,"Atari"],[7,"Gotcha."],[6,"Atari to you!"],[5,"Atari!"],[1,"Hello"],[0,"Hi"]];
+	return turns;
 }
 
 function firstGame(turns){

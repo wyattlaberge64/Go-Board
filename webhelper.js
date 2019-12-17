@@ -18,6 +18,7 @@ var allCaptures=[0,0];
 var newCaptures=[];
 var oldCaptures=[];
 var backwards = false;
+var feedback = ["none", "message", "interaction"];
 
 function setup() {
 	title.innerHTML = "Go!";
@@ -71,13 +72,13 @@ function removeLastTurn(){
 	}
 }
 function teachingGame(turns){
-	turns = [[1,1,"b",[]],[1,2,"w",[]],[2,2,"b",[]],[1,0,"w",[]],[1,3,"b",[]],[2,1,"w",[]],[0,2,"b",[1,2]],[0,1,"w",[]],[0,0,"b",[0,1]],[3,0,"w",[]],[2,0,"b",[1,0]],[3,1,"w",[]],[1,0,"b",[]]];
+	turns = [[1,1,"b",[],1],[1,2,"w",[],0],[2,2,"b",[],0],[1,0,"w",[],0],[1,3,"b",[],1],[2,1,"w",[],2],[0,2,"b",[1,2],1],[0,1,"w",[],1],[0,0,"b",[0,1],1],[3,0,"w",[],1],[2,0,"b",[1,0],1],[3,1,"w",[],1],[1,0,"b",[],1]];
 	gameMessages=[[13,"Now, you could. So I'm blocking that."],[12,"And I can't take you back because that would be Ko."],[11,"Yes, I suppose so. Atari!"],[10," Shouldn\t you have said Atari again?"],[9," That would be Ko, but since I can remove the threat, I will."],[8,"Atari"],[7,"Gotcha."],[6,"Atari to you!"],[5,"Atari!"],[1,"Hello"],[0,"Hi"]];
 	return turns;
 }
 
 function firstGame(turns){
-	turns = [[4,3,"b",[]],[4,5,"w",[]],[4,4,"b",[]],[3,5,"w",[]],[5,5,"b",[]],[5,6,"w",[]],[6,6,"b",[]],[6,5,"w",[]],[5,4,"b",[]],[7,6,"w",[]],[6,7,"b",[]],[7,7,"w",[]],[6,4,"b",[]],[7,5,"w",[]],[4,6,"b",[]],[5,7,"w",[]],[4,7,"b",[]],[6,8,"w",[6,6],[6,7]],[2,5,"b",[]],[3,6,"w",[]],[2,6,"b",[]],[3,7,"w",[]],[3,4,"b",[]],[4,1,"w",[]],[2,7,"b",[]],[4,8,"w",[4,6],[4,7]],[2,1,"b",[]],[6,2,"w",[]],[5,2,"b",[]],[5,1,"w",[]],[7,2,"b",[]],[2,2,"w",[]],[1,2,"b",[]],[6,3,"w",[]],[7,3,"b",[]],[7,1,"w",[]],[7,4,"b",[]],[2,3,"w",[]],[3,1,"b",[]],[2,4,"w",[]],[3,2,"b",[]],[1,5,"w",[]],[1,6,"b",[]],[1,1,"w",[]],[1,4,"b",[]],[1,3,"w",[]],[0,5,"b",[1,5]],[0,2,"w",[1,2]],[0,4,"b",[]],[0,3,"w",[]],[5,3,"b",[]],[6,1,"w",[]],[8,1,"b",[]],[1,0,"w",[]],[7,0,"b",[]],[8,2,"w",[]],[8,3,"b",[8,2]],[6,0,"w",[]],[4,0,"b",[]],[2,0,"w",[]],[3,0,"b",[]],[0,7,"w",[]],[1,7,"b",[]],[8,5,"w",[]],[4,2,"b",[]],[8,0,"w",[7,0]],[8,2,"b",[]],[8,4,"w",[]],[7,0,"b",[8,0]],[2,8,"w",[]],[1,8,"b",[]],[8,0,"w",[7,0]],[0,1,"b",[]],[0,0,"w",[0,1]],[7,0,"b",[8,0]],[0,6,"w",[]],[0,8,"b",[0,6],[0,7]],[8,0,"w",[7,0]],[0,6,"b",[]],[3,8,"w",]];
+	turns = [[4,3,"b",[],0],[4,5,"w",[],0],[4,4,"b",[],0],[3,5,"w",[],0],[5,5,"b",[],0],[5,6,"w",[],0],[6,6,"b",[],0],[6,5,"w",[],0],[5,4,"b",[],0],[7,6,"w",[],0],[6,7,"b",[],0],[7,7,"w",[],0],[6,4,"b",[],0],[7,5,"w",[],0],[4,6,"b",[],0],[5,7,"w",[],0],[4,7,"b",[],0],[6,8,"w",[6,6],[6,7],0],[2,5,"b",[],0],[3,6,"w",[],0],[2,6,"b",[],0],[3,7,"w",[],0],[3,4,"b",[],0],[4,1,"w",[],0],[2,7,"b",[],0],[4,8,"w",[4,6],[4,7],0],[2,1,"b",[],0],[6,2,"w",[],0],[5,2,"b",[],0],[5,1,"w",[],0],[7,2,"b",[],0],[2,2,"w",[],0],[1,2,"b",[],0],[6,3,"w",[],0],[7,3,"b",[],0],[7,1,"w",[],0],[7,4,"b",[],0],[2,3,"w",[],0],[3,1,"b",[],0],[2,4,"w",[],0],[3,2,"b",[],0],[1,5,"w",[],0],[1,6,"b",[],0],[1,1,"w",[],0],[1,4,"b",[],0],[1,3,"w",[],0],[0,5,"b",[1,5],0],[0,2,"w",[1,2],0],[0,4,"b",[],0],[0,3,"w",[],0],[5,3,"b",[],0],[6,1,"w",[],0],[8,1,"b",[],0],[1,0,"w",[],0],[7,0,"b",[],0],[8,2,"w",[],0],[8,3,"b",[8,2],0],[6,0,"w",[],0],[4,0,"b",[],0],[2,0,"w",[],0],[3,0,"b",[],0],[0,7,"w",[],0],[1,7,"b",[],0],[8,5,"w",[],0],[4,2,"b",[],0],[8,0,"w",[7,0],0],[8,2,"b",[],0],[8,4,"w",[],0],[7,0,"b",[8,0],0],[2,8,"w",[],0],[1,8,"b",[],0],[8,0,"w",[7,0],0],[0,1,"b",[],0],[0,0,"w",[0,1],0],[7,0,"b",[8,0],0],[0,6,"w",[],0],[0,8,"b",[0,6],[0,7],0],[8,0,"w",[7,0],0],[0,6,"b",[],0],[3,8,"w",[],0]];
 	gameMessages=[[18,"First capture of the game"],[26,"b has been captured again"],[47,"b\'s first capture"],[48,"w retaliates by capturing another one of b\'s stone"],[57,"b makes another capture to try to make up for lost ground"],[72,"We got ourselves a back \'n\' forth going on here"],[74,"w makes a new capture"]];
 	return turns;
 }
@@ -134,11 +135,12 @@ function placeStone(turn){
 	row = turns[turn][0];
 	column = turns[turn][1];
 	color = (backwards==false) ? turns[turn][2] : "e";
+	code = turns[turn][4];
 	let stoneCount=getStoneCount(row,column);
 	let newStone = allStones[stoneCount];
 	// determine color based on function parameter indicating next / previous
 	newStone.className = color;
-	console.log("Turn: "+(turn+1)+" row: "+row+" column: "+column+" color: "+color);
+	console.log("Turn: "+(turn+1)+" row: "+row+" column: "+column+" color: "+color+" code: "+code);
 }
 
 /* Remove Captures works forwards only */
@@ -254,12 +256,17 @@ function showMessage(turn){
 	message="";
 	while (messageMatch < gameMessages.length){
 		// see if there is a message for this turn
-		if (gameMessages[messageMatch][0]==turn+1) {
-			message=gameMessages[messageMatch][1];
+		if (gameMessages[messageMatch][0]==turn+1){
+			if (turns[turn][4]==2) {
+				alert("an interaction!");
+			}
+			else
+			{
+				message=gameMessages[messageMatch][1];
+			}
 		}
 		messageMatch++;
 	}
 	refreshBox(messages,message,"text");
 	return message;
 }
-
